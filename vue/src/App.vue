@@ -12,7 +12,9 @@ import Navbar from '@/views/layout/Navbar.vue';
 
 export default {
   components: { Navbar },
-  data() {},
+  data() {
+    return {};
+  },
 };
 </script>
 

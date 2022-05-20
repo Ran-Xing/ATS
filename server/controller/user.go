@@ -26,7 +26,7 @@ func Register(c *gin.Context) {
 	// 匹配 电子邮箱
 	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`
 	reg := regexp.MustCompile(pattern)
-	if !reg.MatchString(l.UserName) || len(l.UserName) > 50 {
+	if !reg.MatchString(l.Email) || len(l.Email) > 50 {
 		Fail(c, "邮箱格式错误")
 		return
 	}
@@ -44,7 +44,7 @@ func Register(c *gin.Context) {
 	}
 
 	// 查询用户
-	if err = DB.Model(&UserInfo{}).Where("username = ?", l.UserName).Count(&num).Error; err != nil {
+	if err = DB.Model(&UserInfo{}).Where("Email = ?", l.Email).Count(&num).Error; err != nil {
 		log.Errorf("查询失败, %s", err)
 		Fail(c, "查询失败")
 		return
@@ -64,14 +64,22 @@ func Register(c *gin.Context) {
 	}
 	l.PassWord = string(hashPass)
 
+	// 数据复制
 	u.LoginInfo = l
-	if err := DB.Create(&u).Error; err != nil {
+	if err = DB.Create(&u).Error; err != nil {
 		Fail(c, "注册失败")
 		return
 	}
 
-	u.PassWord = ""
-	Success(c, gin.H{"message": "注册成功", "UserInfo": u})
+	// 生成token
+	var token string
+	if token, err = JwtEncryption(l.Email); err != nil {
+		Fail(c, "系统异常")
+		return
+	}
+
+	// 清除不需要的数据
+	Success(c, gin.H{"message": "注册成功", "token": token})
 }
 
 func Login(c *gin.Context) {
@@ -88,7 +96,7 @@ func Login(c *gin.Context) {
 
 	// 匹配 电子邮箱
 	reg := regexp.MustCompile(`\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*`)
-	if !reg.MatchString(l.UserName) || len(l.UserName) > 50 {
+	if !reg.MatchString(l.Email) || len(l.Email) > 50 {
 		Fail(c, "邮箱格式错误")
 		return
 	}
@@ -100,7 +108,7 @@ func Login(c *gin.Context) {
 	}
 
 	// 查询用户
-	if err = DB.Model(&UserInfo{}).Where("username = ?", l.UserName).Count(&num).Scan(&u).Error; err != nil {
+	if err = DB.Model(&UserInfo{}).Where("Email = ?", l.Email).Count(&num).Scan(&u).Error; err != nil {
 		log.Errorf("查询失败, %s", err)
 		Fail(c, "查询失败")
 		return
@@ -118,13 +126,13 @@ func Login(c *gin.Context) {
 
 	// 生成token
 	var token string
-	if token, err = JwtEncryption(l.UserName); err != nil {
+	if token, err = JwtEncryption(l.Email); err != nil {
 		Fail(c, "系统异常")
 		return
 	}
 
 	c.Set("UserInfo", u)
-	Success(c, gin.H{"message": "登录成功", "token": token, "username": l.UserName})
+	Success(c, gin.H{"message": "登录成功", "token": token, "Email": l.Email})
 }
 
 func Info(c *gin.Context) {

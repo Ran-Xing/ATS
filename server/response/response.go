@@ -6,7 +6,7 @@ import (
 )
 
 func Response(c *gin.Context, httpStatus int, data interface{}) {
-	c.JSON(httpStatus, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"code": httpStatus,
 		"data": data,
 	})

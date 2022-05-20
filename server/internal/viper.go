@@ -27,6 +27,7 @@ func ViperInit() {
 			PORT: 8081
 			MYSQL:
 				HOST: user:name@tcp(ip:port)/database_name?charset=utf8&parseTime=True&loc=Local
+			HOST: http://localhost:8081
 		`)
 		if err = viper.ReadConfig(bytes.NewBuffer(yamlExample)); err != nil {
 			log.Errorf("读取示例配置文件失败, Error: [%v] CoptRight: [%s]", err, Copyright(make([]uintptr, 1)))
