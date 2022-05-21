@@ -1,13 +1,13 @@
 package controller
 
 import (
+	. "github.com/Ran-Xing/ATS/server/internal"
+	. "github.com/Ran-Xing/ATS/server/models"
+	. "github.com/Ran-Xing/ATS/server/response"
 	"github.com/dlclark/regexp2"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
-	. "grs/internal"
-	. "grs/models"
-	. "grs/response"
 )
 
 func Register(c *gin.Context) {

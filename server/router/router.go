@@ -1,9 +1,9 @@
 package Router
 
 import (
+	. "github.com/Ran-Xing/ATS/server/controller"
+	. "github.com/Ran-Xing/ATS/server/middleware"
 	"github.com/gin-gonic/gin"
-	. "grs/controller"
-	. "grs/middleware"
 )
 
 func CollectRoute(r *gin.Engine) *gin.Engine {

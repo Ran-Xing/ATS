@@ -2,10 +2,10 @@ package core
 
 import (
 	"fmt"
+	"github.com/Ran-Xing/ATS/server/internal"
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"grs/internal"
 )
 
 func Viper() *viper.Viper {

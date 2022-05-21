@@ -1,11 +1,11 @@
 package internal
 
 import (
+	. "github.com/Ran-Xing/ATS/server/models"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	. "grs/models"
 )
 
 func ConnectDataBase() {

@@ -1,4 +1,4 @@
-module grs
+module github.com/Ran-Xing/ATS/server
 
 go 1.18
 
