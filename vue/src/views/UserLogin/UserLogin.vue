@@ -1,5 +1,5 @@
 <template>
-  <div class="Register">
+  <div class="Login">
     <b-row class="mt-5">
       <b-col
         md="8"
@@ -57,6 +57,7 @@
 import {
   required, minLength, maxLength, email,
 } from 'vuelidate/lib/validators';
+import { mapActions } from 'vuex';
 
 export default {
   data() {
@@ -83,6 +84,7 @@ export default {
     },
   },
   methods: {
+    ...mapActions('userModule', { userLogin: 'login' }),
     // 限制输入字符数量
     ValidityState(name) {
       const { $dirty, $error } = this.$v.form[name];
@@ -93,41 +95,43 @@ export default {
       this.$v.form.$touch();
       if (this.$v.form.$anyError) {
         console.log(this.$v.form.$anyError);
+        return;
       }
       // 请求
-      const api = 'http://localhost:8081/api/auth/login';
-      this.$axios
-        .post(api, { ...this.form })
-        .then((res) => {
-          if (res.data.code === 422) {
-            this.$bvToast.toast(res.data.data, {
+      this.userLogin(this.form)
+        .then((respone) => {
+          // 验证状态码
+          if (respone.data.code === 422) {
+            this.$bvToast.toast(respone.data.data, {
               title: '请求失败',
               variant: 'danger',
               appendToast: true,
               autoHideDelay: 3000,
             });
-            console.log(res.data.data);
+            console.log(respone.data.data);
           }
-          if (res.data.code === 200) {
-            this.$bvToast.toast(res.data.data.message, {
+          if (respone.data.code === 200) {
+            this.$bvToast.toast(respone.data.data.message, {
               title: '登录成功!',
               variant: 'success',
               appendToast: true,
               autoHideDelay: 3000,
             });
-            console.log(res.data.data.message);
+            console.log(respone.data.data.message);
           }
-          // 保存token
+        })
+        .then(() => {
           // 跳转主页
+          this.$router.replace({ name: 'home' });
         })
         .catch((err) => {
-          this.$bvToast.toast(err.respone.data.data, {
+          this.$bvToast.toast(err.response, {
             title: '请求失败',
             variant: 'danger',
             appendToast: true,
             autoHideDelay: 3000,
           });
-          console.log(err.respone.data.data);
+          console.log(err.response);
         });
     },
   },

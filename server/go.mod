@@ -3,6 +3,7 @@ module grs
 go 1.18
 
 require (
+	github.com/dlclark/regexp2 v1.4.0
 	github.com/fsnotify/fsnotify v1.5.1
 	github.com/gin-gonic/gin v1.7.7
 	github.com/golang-jwt/jwt v3.2.2+incompatible
